@@ -1,0 +1,143 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{fancyhdr}
+\usepackage[most]{tcolorbox} % Load the tcolorbox package with additional libraries
+
+\newtcolorbox{bb}[1][]{
+  colback=teal!15!white,
+  colframe=teal!50!black,
+  title=#1
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\chead{\textbf{Math 164 - Assignment \#6, Fall 2024}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+
+\begin{enumerate}
+    \item  Suppose that we perform an experiment to calculate the gravitational constant $g$ as follows. We drop a ball from a certain height and measure its distance from the original point at certain time instants. The results of the experiment are shown in the following table.
+
+\[
+\begin{array}{|c|c|c|c|}
+\hline
+\text{Time (s)} & 1.00 & 2.00 & 3.00 \\
+\hline
+\text{Distance (m)} & 5.00 & 19.5 & 44.0 \\
+\hline
+\end{array}
+\]
+
+The equation relating the distance $s$ and the time $t$ at which $s$ is measured is given by
+\[
+s = \frac{1}{2} g t^2.
+\]
+
+\begin{enumerate}
+    \item[(a)] Find a least-squares estimate of $g$ using the experimental results from the table above.
+    \item[(b)] Suppose that we take an additional measurement at time $4.00$ and obtain a distance of $78.5$. Use the RLS algorithm to calculate an updated least-squares estimate of $g$.
+\end{enumerate}
+
+\begin{bb}
+\item
+Let $[x_1, y_1]^\top, \dots, [x_p, y_p]^\top$, $p \geq 2$, be points in $\mathbb{R}^2$. We wish to find the straight line of best fit through these points (``best'' in the sense that the total squared error is minimized); that is, we wish to find $a^*, b^* \in \mathbb{R}$ to minimize
+\[
+f(a, b) = \sum_{i=1}^p (a x_i + b - y_i)^2.
+\]
+
+Assume that the $x_i$, $i = 1, \dots, p$, are not all equal. Show that there exist unique parameters $a^*$ and $b^*$ for the line of best fit, and find the parameters in terms of the following quantities:
+
+\[
+\overline{X} = \frac{1}{p} \sum_{i=1}^p x_i, \quad
+\overline{Y} = \frac{1}{p} \sum_{i=1}^p y_i, \quad
+\overline{X^2} = \frac{1}{p} \sum_{i=1}^p x_i^2,
+\]
+
+\[
+\overline{Y^2} = \frac{1}{p} \sum_{i=1}^p y_i^2, \quad
+\overline{XY} = \frac{1}{p} \sum_{i=1}^p x_i y_i.
+\]
+\end{bb}
+
+\textbf{Solution: } 
+
+Recall that Theorem 12.1 states that the unique vector $x^*$ that minimizes $||Ax-b||^2$ is given by the solution to the equation
+\[ A^TAx = A^Tb \implies x^* = (A^TA)^{-1} A^T b\]
+We can rewrite the problem as:
+\begin{align*}
+    f(a,b) &= \sum_{i=1}^{p}(ax_i + b - y_i)^2 \\
+    &= ||\begin{bmatrix}
+        x_1 & 1 \\
+        x_2 & 1 \\
+        \vdots & \vdots \\
+        x_p & 1
+        \end{bmatrix}
+        \begin{bmatrix}
+            a \\ b
+        \end{bmatrix} - \begin{bmatrix}
+            y_1 \\ y_2 \\ \vdots \\ y_p
+        \end{bmatrix}||^2 = ||Ax-b||^2
+\end{align*}
+By Theorem 12.1, the matrix A must be invertible. Since $x_i$'s are distinct, the columns of the matrix are linearly independent, making it full rank and thus invertible. 
+    \\Therefore, there exists a unique pair of parameters $a^*, b^*$ that minimizes the total squared error.
+    \\Now, let's apply theorem 12.1 to find the mimimizer $x^*$
+
+\begin{align*}
+x^* &= (A^TA)^{-1} A^T b \\
+ A &= \begin{bmatrix}
+    x_1 & 1 \\
+    x_2 & 1 \\
+    \vdots & \vdots \\
+    x_p & 1
+    \end{bmatrix} \\ b&=\begin{bmatrix}
+        y_1 \\ y_2 \\ \vdots \\ y_p
+    \end{bmatrix} \\
+    x^* &= (\begin{bmatrix}
+        \overline{X^2} & \overline{X} \\ \overline{X} & 1 
+    \end{bmatrix})^{-1} \begin{bmatrix}
+        \overline{XY}
+        \\ \overline{Y}
+    \end{bmatrix} \\
+    \begin{bmatrix}
+        a^*\\ b^*
+    \end{bmatrix} &= \frac{1}{\overline{X^2} - \overline{X}^2} \begin{bmatrix}
+        \overline{XY} - (\overline{X}) (\overline{Y}) \\
+        \overline{X^2}\overline{Y} - (\overline{X}) \overline{XY}
+    \end{bmatrix}
+\end{align*}
+
+\bigbreak
+\item We are given a point $[x_0, y_0]^\top \in \mathbb{R}^2$. Consider the straight line on the $\mathbb{R}^2$ plane given by the equation $y = mx$. Using a least-squares formulation, find the point on the straight line that is closest to the given point $[x_0, y_0]$, where the measure of closeness is in terms of the Euclidean norm on $\mathbb{R}^2$. 
+
+\textbf{Hint:} The given line can be expressed as the range of the matrix $A = [1, m]^\top$.
+
+\item 
+Let $A \in \mathbb{R}^{m \times n}$, $b \in \mathbb{R}^m$, $m \geq n$, and $\text{rank} A = n$. Consider the constrained optimization problem
+\[
+\text{minimize } \frac{1}{2} x^\top x - x^\top b \quad \text{subject to } x \in R(A),
+\]
+where $R(A)$ denotes the range of $A$. Derive an expression for the global minimizer of this problem in terms of $A$ and $b$.
+
+
+\item Let $A \in \mathbb{R}^{m \times n}$, $b \in \mathbb{R}^m$, $m \leq n$, $\text{rank} A = m$, and $x_0 \in \mathbb{R}^n$. Consider the problem
+\[
+\text{minimize } \|x - x_0\| \quad \text{subject to } Ax = b.
+\]
+Show that this problem has a unique solution given by
+\[
+x^* = A^\top \left( AA^\top \right)^{-1} b + \left( I_n - A^\top \left( AA^\top \right)^{-1} A \right) x_0.
+\]
+
+\item Prove the following properties of generalized inverses:
+\begin{enumerate}
+    \item[(a)] $(A^\top)^\dagger = (A^\dagger)^\top$.
+    \item[(b)] $(A^\dagger)^\dagger = A$.
+\end{enumerate}
+
+\end{enumerate}
+
+\end{document}
