@@ -1,0 +1,424 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry} % Set margins to 1 inch
+\usepackage{amsmath} % Advanced math typesetting
+\usepackage{amsfonts} % Additional math fonts
+\usepackage{amssymb} % Extended symbol collection
+\usepackage{graphicx} % For including images
+\usepackage{enumitem} % Customize list environments
+\usepackage[most]{tcolorbox} % Load the tcolorbox package with additional libraries
+
+\setlength{\parindent}{0pt} % Removes all indentation from paragraphs
+
+\newtcolorbox{mybluebox}[1][]{
+  colback=teal!15!white,
+  colframe=teal!50!black,
+  title=#1
+}
+
+\begin{document}
+
+\title{Math 164 HW3}
+\author{Shilpa Bojjireddy}
+\maketitle
+
+\begin{mybluebox}
+  \textbf{1.} Perform two iterations leading to the minimization of
+\[
+f(x) = x_1 + \frac{1}{2} x_2 + \frac{1}{2} x_1^2 + x_2^2 + 3 \quad \text{(1)}
+\]
+using the steepest descent method with the starting point $x^{(0)} = 0$. Also determine an optimal solution analytically.
+\end{mybluebox}
+If we solve for a minimum analytically, we get:
+\begin{align*}
+\nabla f(x) &= \begin{bmatrix}
+  x_1 + 1 \\
+  2x_2 + \frac{1}{2}
+\end{bmatrix} = 0\\
+x_1 &= -1 \\
+x_2 &= -\frac{1}{4} 
+\end{align*}
+The Steepest Descent Method is 
+\begin{align}
+  x^{k+1} &:= x^k - \alpha_k \nabla f(x^k) \\
+  \alpha_k &= argmin_{\alpha \geq 0} f(x^k - \alpha \nabla f(x^k))
+\end{align}
+\\ $\nabla f(x) = \begin{bmatrix}
+  1 + x_1 \\
+  \frac{1}{2} + 2x_2 
+\end{bmatrix}, \nabla f(x_0) = \begin{bmatrix}
+  1 \\ 0.5
+\end{bmatrix}, x_0 = \begin{bmatrix}
+  0 \\ 0
+\end{bmatrix}$ \\
+
+First we will use the first derivative test to compute $\alpha_{0}$ with (2)
+\\Define \( g(\alpha) \) as:
+\[
+g(\alpha) = -\alpha - 0.25\alpha + 0.75\alpha^2 + 3
+\]
+
+Minimize \( g(\alpha) \):
+\[
+\alpha_0 = \arg \min_{\alpha \geq 0} \, g(\alpha)
+\]
+
+Differentiate \( g(\alpha) \) and set to zero:
+\[
+g'(\alpha) = \frac{3}{2}\alpha - \frac{5}{4} = 0 \implies \alpha_0 = \frac{5}{6}
+\]
+
+First iteration:\\
+$$x^1 = \begin{bmatrix}0 \\ 0 \end{bmatrix} - \frac{5}{6} \begin{bmatrix} 
+  1 \\ 0.5
+\end{bmatrix} = \begin{bmatrix}
+  -\frac{5}{6} \\ -\frac{5}{12}
+\end{bmatrix}$$
+
+To find \( x_2 \), we first determine
+\[
+\nabla f(x^{(1)}) = \begin{bmatrix}
+  \frac{1}{6} \\ -\frac{2}{6}
+\end{bmatrix}
+\]
+
+After some calculations, we find \[\alpha_1 = argmin(f(x^1) - \alpha \nabla f(x^{(1)})) = \frac{5}{9}\]
+Second Iteration:
+\[
+x_2 = x_1 - \alpha_1\nabla f(x^1) = \begin{bmatrix}
+  -\frac{5}{6} \\ -\frac{5}{12}
+\end{bmatrix} - \frac{5}{9} \begin{bmatrix}
+  \frac{1}{6} \\ -\frac{2}{6}
+\end{bmatrix} = \begin{bmatrix}
+   -0.926\\-0.231
+\end{bmatrix}
+\]
+\bigbreak
+\begin{mybluebox}
+  \textbf{2.} Consider the two sequences $\{x^{(k)}\}$ and $\{y^{(k)}\}$ defined iteratively as follows:
+\begin{align}
+    x^{(k+1)} &= ax^{(k)} \quad \text{(2)} \\
+    y^{(k+1)} &= \left(y^{(k)}\right)^b \quad \text{(3)}
+\end{align}
+where $a \in \mathbb{R}, \, b \in \mathbb{R}, \, 0 < a < 1, \, b > 1, \, x^{(0)} \neq 0, \, y^{(0)} \neq 0$, and $|y^{(0)}| < 1$.
+
+\begin{itemize}
+    \item[(a)] Derive a formula for $x^{(k)}$ in terms of $x^{(0)}$ and $a$. Use this to deduce that $x^{(k)} \to 0$.
+    \item[(b)] Derive a formula for $y^{(k)}$ in terms of $y^{(0)}$ and $b$. Use this to deduce that $y^{(k)} \to 0$.
+    \item[(c)] Find the order of convergence of $\{x^{(k)}\}$ and the order of convergence of $\{y^{(k)}\}$.
+    \item[(d)] Calculate the smallest number of iterations $k$ such that $|x^{(k)}| \leq c |x^{(0)}|$, where $0 < c < 1$.\\
+    \textit{Hint:} The answer is in terms of $a$ and $c$. You may use the notation $\lceil z \rceil$ to represent the smallest integer not smaller than $z$.
+    \item[(e)] Calculate the smallest number of iterations $k$ such that $|y^{(k)}| \leq c |y^{(0)}|$, where $0 < c < 1$.
+    \item[(f)] Compare the answer of part (e) with that of part (d), focusing on the case where $c$ is very small.
+\end{itemize}
+\end{mybluebox}
+(a)
+\[
+x^{(1)} = ax^{(0)} \implies x^{(2)} = a(ax^{(0)}) \implies x^{(k)} = a^k x^{(0)}
+\]
+where \( a \in \mathbb{R}, \, 0 < a < 1 \). Thus, we can conclude:
+\[
+x^{(0)} \cdot \lim_{k \to \infty} a^k = 0
+\]
+(b)
+\begin{align*}
+  y^{(1)} &= (y^{(0)})^b \\
+  y^{(2)} &= (y^{(1)})^b = ((y^{(0)})^b)^b = (y^{(0)})^{b^2} \\
+  y^{(3)} &= (y^{(2)})^b = (y^{(0)})^{b^3} \\
+  y^{(k)} &= (y^{(0)})^{b^k}
+\end{align*}
+\( b \in \mathbb{R}, \, \left| y^{(0)} \right| < 1 \). So, we can conclude
+\[
+\lim_{k \to \infty} (y^{(0)})^{b^k}= 0
+\]
+(c) 
+According to the definition of order of convergence, \( p \) is given by:
+\[
+\lim_{k \to \infty} \frac{\| x^{(k+1)} - x^* \|}{\| x^{(k)} - x^* \|^p} = L, \quad \text{where } 0 < L < \infty.
+\]
+
+Substituting \( x^* = 0 \):
+\[
+\lim_{k \to \infty} \frac{|a^{k+1} \, x^{(0)}|}{\left( |a^k \, x^{(0)}| \right)^p} = \lim_{k \to \infty} \frac{a^{k+1} \, |x^{(0)}|}{a^{kp} \, |x^{(0)}|^p}.
+\]
+Simplifying,
+\[
+\lim_{k \to \infty} \frac{a^{k+1}}{a^{kp}} = \lim_{k \to \infty} a^{k(1-p)} \cdot a.
+\]
+For the limit to be finite and non-zero, \( 1 - p = 0 \), implying \( p = 1 \). So, \( \{x^{(k)}\} \) converges \textit{linearly} with order \( p = 1 \).
+
+According to the definition of order of convergence, \( p \) is given by:
+\[
+\lim_{k \to \infty} \frac{\| y^{(k+1)} - y^* \|}{\| y^{(k)} - y^* \|^p} = L, \quad \text{where } 0 < L < \infty.
+\]
+
+Substituting \( y^* = 0 \):
+\[
+\lim_{k \to \infty} \frac{\left| \left(y^{(0)}\right)^{b^{k+1}} \right|}{\left| \left(y^{(0)}\right)^{b^k} \right|^p} = \lim_{k \to \infty} \frac{\left(y^{(0)}\right)^{b^{k+1}}}{\left(y^{(0)}\right)^{p \, b^k}}.
+\]
+Simplifying,
+\[
+\lim_{k \to \infty} \left(y^{(0)}\right)^{b^{k+1} - p \, b^k}.
+\]
+
+For all $p > 0$
+\[
+b^{k+1} - p \, b^k \to \infty \quad \text{as} \quad k \to \infty.
+\]
+And the limit goes to 0, indicating the order of convergence is $\infty$. 
+
+(d)
+\[
+|x^{(k)}| \leq c |x^{(0)}| \implies |a^k x^{(0)}| \leq c |x^{(0)}|
+\]
+\[
+a^k x^{(0)} \leq c x^{(0)}
+\]
+\[
+k \ln a \leq \ln c, \ln a < 0
+\]
+\[
+k \geq \left\lceil \frac{\ln c}{\ln a} \right\rceil
+\]\\
+(e)
+
+\[
+|y^{(k)}| \leq c |y^{(0)}|
+\]
+
+\[
+\Rightarrow \left| (y^{(0)})^{b^k} \right| \leq c \, |y^{(0)}|
+\]
+
+\[
+\left| (y^{(0)})^{b^k - 1} \right| \leq c
+\]
+
+\[
+(b^k - 1) \ln |y^{(0)}| \leq \ln(c)
+\]
+
+\[
+b^k \geq 1 + \frac{\ln(c)}{\ln |y^{(0)}|}
+\]
+
+\[
+k \geq \left\lceil \log_b \left( 1 + \frac{\ln(c)}{\ln |y^{(0)}|} \right) \right\rceil
+\]
+
+(f) When \( c \) is very small, the \( y^{(k)} \) sequence converges faster than the \( x^{(k)} \) sequence, implying that the number of iterations needed for the \( y^{(k)} \) sequence to reach a small value is less than that for the \( x^{(k)} \) sequence.
+
+\begin{mybluebox}
+  \textbf{3.} This exercise explores a zero-finding algorithm. Suppose that we wish to solve the equation \( h(\mathbf{x}) = 0 \), where
+\[
+h(\mathbf{x}) = \begin{bmatrix}
+4 + 3x_1 + 2x_2 \\
+1 + 2x_1 + 3x_2
+\end{bmatrix} \quad \text{(4)}
+\]
+
+Consider using an algorithm of the form 
+\[
+\mathbf{x}^{(k+1)} = \mathbf{x}^{(k)} - \alpha h(\mathbf{x}^{(k)}),
+\]
+where \( \alpha \) is a scalar constant that does not depend on \( k \).
+
+\begin{itemize}
+    \item[(a)] Find the solution of \( h(\mathbf{x}) = 0 \).
+    \item[(b)] Find the largest range of values of \( \alpha \) such that the algorithm is globally convergent to the solution of \( h(\mathbf{x}) = 0 \).
+    \item[(c)] Assuming that \( \alpha \) is outside the range of values in part (b), give an example of an initial condition \( \mathbf{x}^{(0)} \) of the form \( \begin{bmatrix} x_1 \\ 0 \end{bmatrix}^\top \) such that the algorithm is guaranteed not to satisfy the descent property.
+\end{itemize}
+\end{mybluebox}
+(a) 
+\begin{align}
+  3x_1 + 2x_2 &= -4\\
+  2x_1 + 3x_2 &= -1\\
+  x_1 = -2&, x_2 = 1
+\end{align}
+\\
+(b) By Theorem 8.3, For the fixed step size gradient algorithm, $x^{(k)} \rightarrow x^{*}$ for any $x^{(0)}$ if and only if 
+\[0 < \alpha < \frac{2}{\lambda_{max}(Q)}\]
+The fixed step size gradient algorithm is
+\[x^{(k+1)} = x^{(k)} - \alpha g^{(k)},
+g^{(k)} = \nabla f(x^{(k)})
+\]
+Note that since $g(k)$ is the gradient of $f(x^{(k)})$, $g(k)$ is linear.\\
+$h(x)$ is linear, thus we can apply theorem 8.3, with $g(x) = h(x)$ \\
+Applying Theorem 8.3 to h(x), we find that
+\[Q = J_h(x)= \begin{bmatrix}
+  3 & 2 \\
+  2 & 3
+\end{bmatrix}\]
+\[ \lambda_{max} = 5, \lambda_{min} = 2\]
+\[0 < \alpha < \frac{2}{5} = 0.4\] 
+(c)
+If the step size is too large, let's say that $\alpha = 1$, an example of an initial condition $x^{(0)}$ where the
+descent property is not satisfied is $x^{(0)} = \begin{bmatrix}0 \\ 0\end{bmatrix}, f(x^{(0)}) = [4,1]^T$.
+\begin{align}
+  x^{(1)} &= x^{(0)} - \alpha h(x^{(0)}) \\
+  &= \begin{bmatrix}0 \\ 0\end{bmatrix} - \begin{bmatrix} 4 \\ 1 \end{bmatrix} = \begin{bmatrix} -4 \\ -1\end{bmatrix} \\
+  f(x^{(1)}) &= [-10, -10]^T
+\end{align}
+Comparing the norms of $f(x^{(0)})$ and $f(x^{(1)})$, we can conclude that the descent property is not satisfied.
+
+\begin{mybluebox}
+  \textbf{4.} Consider the function \( f : \mathbb{R}^2 \to \mathbb{R} \) given by
+\[
+f(x) = \frac{3}{2} \left( x_1^2 + x_2^2 \right) + (1 + a)x_1 x_2 - (x_1 + x_2) + b \quad \text{(5)}
+\]
+where \( a \) and \( b \) are some unknown real-valued parameters.
+
+\begin{itemize}
+    \item[(a)] Write the function \( f \) in the usual multivariable quadratic form.
+    
+    \item[(b)] Find the largest set of values of \( a \) and \( b \) such that the unique global minimizer of \( f \) exists, and write down the minimizer (in terms of the parameters \( a \) and \( b \)).
+    
+    \item[(c)] Consider the following algorithm:
+    \[
+    x^{(k+1)} = x^{(k)} - \frac{2}{5} \nabla f \left( x^{(k)} \right)
+    \]
+    Find the largest set of values of \( a \) and \( b \) for which this algorithm converges to the global minimizer of \( f \) for any initial point \( x^{(0)} \).
+\end{itemize}
+\end{mybluebox}
+(a) The usual quadratic form is 
+\[f(x) = \frac{1}{2}x^TQx-b^Tx+c\]
+\[\nabla f(x) = \begin{bmatrix}
+  3x_1+(1+a)x_2 \\ 3x_2+(1+a)x_1
+\end{bmatrix}\]
+\[\nabla f(x) = 2Qx \implies 2Q = \begin{bmatrix}
+  3 & (1+a) \\ (1+a) & 3
+\end{bmatrix}\]
+\[b = [1, 1]^T\]
+The function f in quadratic form is
+\[f(x) = \frac{1}{2}x^T \begin{bmatrix}
+  3 & (1+a) \\(1+a) & 3
+\end{bmatrix}x - \begin{bmatrix}
+  1 & 1
+\end{bmatrix}x + b\]
+(b) Recall that for the unique global minimizer of f to exist, $Q$ must be positive definite, ensuring all the curvature is upwards.\\
+To check positive definiteness of Q, we will check that the leading principle minors are all positive.\\
+\begin{align*}
+  \nabla_1 &= 3 > 0\\
+  \nabla_2 &= det(Q) = 9 - (1+a)^2 \\
+  9 - (1+a)^2 &> 0 \rightarrow -4 < a < 2
+\end{align*}
+We conclude that $ -4 < a < 2 $ and $ b \in \mathbb{R} $ \\
+The minimizer $x^* = Q^{-1}b$
+\begin{align*}
+  x^* &= \frac{1}{9-(1+a)^2}\begin{bmatrix}
+    3 & -(1+a) \\ -(1+a) & 3
+  \end{bmatrix}\begin{bmatrix}
+    1 \\ 1
+  \end{bmatrix} \\
+  x^* &= \frac{1}{-(a+4)(a-2)}\begin{bmatrix}
+    2-a \\ 2-a
+  \end{bmatrix} \\
+  x^* &= \frac{1}{a+4}\begin{bmatrix}
+    1 \\ 1
+  \end{bmatrix}
+\end{align*}
+(c) Using Theroem 8.3, we know that for the algorithm to converge globally, 
+\begin{align*}
+  0 < \alpha &< \frac{2}{\lambda_{max}(Q)}, \lambda_1 = 4+a, \lambda_2=2-a, \alpha = \frac{2}{5} \\
+  \lambda_{max}(Q) &< \frac{2}{\alpha} =  5 \\
+  \lambda_{max}(Q) &= max(4+a, 2-a) \rightarrow -3 < a < 1 
+\end{align*}
+So, $-3 < a < 1$ and $b \in \mathbb{R}$
+
+\begin{mybluebox}
+  \textbf{5.} Let \( f : \mathbb{R} \to \mathbb{R} \), \( f \in C^3 \), with first derivative \( f' \), second derivative \( f'' \), and unique minimizer \( x^* \). Consider a fixed-step-size gradient algorithm:
+\[
+x^{(k+1)} = x^{(k)} - \alpha f'\left( x^{(k)} \right).
+\]
+
+Suppose that \( f''(x^*) \neq 0 \) and \( \alpha = \frac{1}{f''(x^*)} \). Assuming that the algorithm converges to \( x^* \), show that the order of convergence is at least 2.
+\end{mybluebox}
+To show that the order of convergence is at least 2, I will show that the error at each iteration is proportional to the square of the previous error, demonstrating that the error
+is decreasing quadratically with each iteration. \\
+The error at the $k$'th iteration is defined as 
+\begin{align}
+  e^{(k)} = x^{(k)} - x^*  
+\end{align}
+Let's first approximate $f'(x^{(k)})$ near $x^*$ using Taylor's approximation
+\begin{align} f'(x^{(k)}) =  f'(x^{*})+f''(x^*)(x^{(k)}-x^*)+\frac{1}{2}f(\xi )(x^{(k)} - x^*)^2 \end{align}
+Let $\frac{1}{2}f(\xi ) = c$, and $f'(x^*) = 0$, since it is the minimizer. After plugging these values in to (12) and substituting (12) into the gradient algorithm, we have
+\[x^{(k+1)} = x^{(k)} - \frac{f''(x^*)(x^{(k)} - x^*) + c(x^{(k)}-x^*)^2}{f''(x^*)}\]
+Simplifying further, we find that 
+\[x^{(k+1)} - x^* = c(x^{(k)} - x^*)^2\]
+Error at the $k+1$th iteration is $e^{(k+1)} = x^{(k+1)} - x^*$. We can substitute this and (11) into the above equation to get \\
+\[e^{(k+1)} = c(e^{(k)})^2\]
+We have shown that the error at the k+1th iteration is proportional to error at the kth iteration, which implies that the given gradient algorithm has at least second-order convergence.
+
+\begin{mybluebox}
+  \textbf{6.} Let \( f : \mathbb{R}^n \to \mathbb{R} \) be given by
+  \[
+  f(x) = \frac{1}{2} x^\top Q x - x^\top b,
+  \]
+  where \( b \in \mathbb{R}^n \) and \( Q \) is a real symmetric positive definite \( n \times n \) matrix. Suppose that we apply the steepest descent method to this function, with \( x^{(0)} \neq Q^{-1} b \). Show that the method converges in one step, that is, \( x^{(1)} = Q^{-1} b \), if and only if \( x^{(0)} \) is chosen such that
+  \[
+  g^{(0)} := Q x^{(0)} - b
+  \]
+  is an eigenvector of \( Q \).  
+\end{mybluebox}
+$\mathbf(\rightarrow)$:\\
+First we will show that if the method converges in one step
+\[
+x^{(1)} = x^*  = Q^{-1}b
+\]
+Then, $g^{(0)} = Qx^{(0)}-b$ is an eigenvector of $Q$. 
+The steepest descent method is 
+\[Q^{-1}b = x^{(1)} = x^{(0)}-\alpha g^{(0)} = x^{(0)}-\alpha( Q x^{(0)} - b)
+\]
+Simplifying this, we find 
+\begin{align*}
+  Q^{-1}b &= x^{(0)}-\alpha g^{(0)} \\
+  b &= Qx^{(0)} - \alpha Q g^{(0)}\\
+  \alpha Q g^{(0)} &= Qx^{(0)} - b \\
+  Q g^{(0)} &= \frac{1}{\alpha} Qx^{(0)} - b = \frac{1}{\alpha} g^{(0)}
+\end{align*}
+We can let $\lambda = \alpha$, then since $Qg^{(0)} = \lambda g^{(0)}$, we can conclude that $g^{(0)}$
+is an eigenvector of Q\\
+$(\leftarrow)$:\\
+For the backwards direction, we will show if $x^{(0)}$ is chosen such that $g^{(0)} = Qx^{(0)} - b$ is an eigenvector of $Q$, 
+then the steepest descent method converges in one step. \\
+The gradient at the initial point \( x^{(0)} \) is:
+\[
+g^{(0)} = Q x^{(0)} - b
+\]
+
+The update for the next iteration is given by:
+\[
+x^{(1)} = x^{(0)} - \alpha_k g^{(0)}
+\]
+
+Since \( g^{(0)} \) is an eigenvector of \( Q \) with eigenvalue \( \lambda \), we have:
+\[
+Q g^{(0)} = \lambda g^{(0)}
+\]
+
+Therefore, the gradient can be written as:
+\[
+g^{(0)} = Q^{-1} \lambda g^{(0)}
+\]
+
+The update for \( x^{(1)} \) becomes:
+\[
+x^{(1)} = x^{(0)} - \alpha_k \left( Q^{-1} \lambda g^{(0)} \right)
+\]
+
+Substituting for \( g^{(0)} \), we get:
+\[
+x^{(1)} = x^{(0)} - \alpha_k \left( \lambda Q^{-1} (Q x^{(0)} - b) \right)
+\]
+
+Simplifying further:
+\[
+x^{(1)} = x^{(0)} - \lambda \alpha_k \left( x^{(0)} - Q^{-1} b \right)
+\]
+
+We choose \( \alpha_k \) such that \( \lambda \alpha_k = 1 \), which satisfies Theorem 8.3. We conclude that the method converges in one step:
+\[
+x^{(1)} = Q^{-1} b = x^*
+\]
+
+
+\end{document}
