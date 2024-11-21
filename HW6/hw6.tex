@@ -6,9 +6,16 @@
 \usepackage[most]{tcolorbox} % Load the tcolorbox package with additional libraries
 
 \newtcolorbox{bb}[1][]{
-  colback=teal!15!white,
+  colback=green!5!white,
   colframe=teal!50!black,
-  title=#1
+  title=#1,
+  boxrule=0.8mm,      
+  top=6mm,             
+  bottom=6mm,          
+  left=6mm,            
+  right=6mm,           
+  before=\vspace{5mm}, 
+  after=\vspace{5mm}   
 }
 
 \pagestyle{fancy}
@@ -20,28 +27,58 @@
 
 
 \begin{enumerate}
+\begin{bb}
     \item  Suppose that we perform an experiment to calculate the gravitational constant $g$ as follows. We drop a ball from a certain height and measure its distance from the original point at certain time instants. The results of the experiment are shown in the following table.
+    
+    \[
+    \begin{array}{|c|c|c|c|}
+    \hline
+    \text{Time (s)} & 1.00 & 2.00 & 3.00 \\
+    \hline
+    \text{Distance (m)} & 5.00 & 19.5 & 44.0 \\
+    \hline
+    \end{array}
+    \]
+    
+    The equation relating the distance $s$ and the time $t$ at which $s$ is measured is given by
+    \[
+    s = \frac{1}{2} g t^2.
+    \]
+    
+    \begin{enumerate}
+        \item[(a)] Find a least-squares estimate of $g$ using the experimental results from the table above.
+        \item[(b)] Suppose that we take an additional measurement at time $4.00$ and obtain a distance of $78.5$. Use the RLS algorithm to calculate an updated least-squares estimate of $g$.
+    \end{enumerate}
+\end{bb}
 
+\textbf{Solution: }\\
+Recall that Theorem 12.1 states that the unique vector $x^*$ that minimizes $||Ax-b||^2$ is given by the solution to the equation
+\[ A^TAx = A^Tb \implies x^* = (A^TA)^{-1} A^T b\]
+To solve this problem, we must first write it in the form of a least squares problem.
+\begin{align*}
+    s &= \frac{t^2}{2}g \\
+    A &= \begin{bmatrix}
+        1/2 \\ 2 \\ 9/2
+    \end{bmatrix}\\
+    b &= \begin{bmatrix}
+        5 \\ 19.5 \\ 44
+    \end{bmatrix} \\
+\end{align*}
+So the least squares estimate of g is now given by 
 \[
-\begin{array}{|c|c|c|c|}
-\hline
-\text{Time (s)} & 1.00 & 2.00 & 3.00 \\
-\hline
-\text{Distance (m)} & 5.00 & 19.5 & 44.0 \\
-\hline
-\end{array}
-\]
+    g^* = (\begin{bmatrix}
+        1/2 & 2 & 9/2
+    \end{bmatrix}\\\begin{bmatrix}
+        1/2 \\ 2 \\ 9/2
+    \end{bmatrix}\\)^{-1}\begin{bmatrix}
+        1/2 & 2 & 9/2
+    \end{bmatrix}\\\begin{bmatrix}
+        5 \\ 19.5 \\ 44
+    \end{bmatrix} = 9.776
+    \]
 
-The equation relating the distance $s$ and the time $t$ at which $s$ is measured is given by
-\[
-s = \frac{1}{2} g t^2.
-\]
 
-\begin{enumerate}
-    \item[(a)] Find a least-squares estimate of $g$ using the experimental results from the table above.
-    \item[(b)] Suppose that we take an additional measurement at time $4.00$ and obtain a distance of $78.5$. Use the RLS algorithm to calculate an updated least-squares estimate of $g$.
-\end{enumerate}
-
+\bigbreak
 \begin{bb}
 \item
 Let $[x_1, y_1]^\top, \dots, [x_p, y_p]^\top$, $p \geq 2$, be points in $\mathbb{R}^2$. We wish to find the straight line of best fit through these points (``best'' in the sense that the total squared error is minimized); that is, we wish to find $a^*, b^* \in \mathbb{R}$ to minimize
@@ -65,8 +102,6 @@ Assume that the $x_i$, $i = 1, \dots, p$, are not all equal. Show that there exi
 
 \textbf{Solution: } 
 
-Recall that Theorem 12.1 states that the unique vector $x^*$ that minimizes $||Ax-b||^2$ is given by the solution to the equation
-\[ A^TAx = A^Tb \implies x^* = (A^TA)^{-1} A^T b\]
 We can rewrite the problem as:
 \begin{align*}
     f(a,b) &= \sum_{i=1}^{p}(ax_i + b - y_i)^2 \\
@@ -138,27 +173,76 @@ The measure of closeness is in terms of the Euclidean norm on $\mathbb{R}^2$, wh
 
 
 \bigbreak
-\item 
-Let $A \in \mathbb{R}^{m \times n}$, $b \in \mathbb{R}^m$, $m \geq n$, and $\text{rank} A = n$. Consider the constrained optimization problem
-\[
-\text{minimize } \frac{1}{2} x^\top x - x^\top b \quad \text{subject to } x \in R(A),
-\]
-where $R(A)$ denotes the range of $A$. Derive an expression for the global minimizer of this problem in terms of $A$ and $b$.
 
+\begin{bb}
+    \item 
+    Let $A \in \mathbb{R}^{m \times n}$, $b \in \mathbb{R}^m$, $m \geq n$, and $\text{rank} A = n$. Consider the constrained optimization problem
+    \[
+    \text{minimize } \frac{1}{2} x^\top x - x^\top b \quad \text{subject to } x \in R(A),
+    \]
+    where $R(A)$ denotes the range of $A$. Derive an expression for the global minimizer of this problem in terms of $A$ and $b$.    
+\end{bb}
+\textbf{Solution:}\\
+We can rewrite the problem as a least squares problem, and then apply Theorem 12.1 \\
+Observe that $$ \frac{1}{2} x^\top x - x^\top b = \frac{1}{2}||x-b||^2 $$
+And if $x \in R(A)$, then $\exists y \in \mathbb{R}^n$ such that $x = Ay$ \\
+The problem is now to find the unique vector $x^*$ that minimizes:  $\frac{1}{2}||Ay-b||^2$
 
-\item Let $A \in \mathbb{R}^{m \times n}$, $b \in \mathbb{R}^m$, $m \leq n$, $\text{rank} A = m$, and $x_0 \in \mathbb{R}^n$. Consider the problem
-\[
-\text{minimize } \|x - x_0\| \quad \text{subject to } Ax = b.
-\]
-Show that this problem has a unique solution given by
-\[
-x^* = A^\top \left( AA^\top \right)^{-1} b + \left( I_n - A^\top \left( AA^\top \right)^{-1} A \right) x_0.
-\]
+\begin{align*}
+    y^* &= (A^TA)^{-1} A^T b \\
+    x^* &= Ay^* = A \left( A^TA \right)^{-1} A^T b    
+\end{align*}
 
+Note: another interesting way to solve this problem is to express the objective function in terms of $y$, and minimize it by setting the gradient to $0$ and solving for $y^*$.
+
+\bigbreak
+
+\begin{bb}
+    \item Let $A \in \mathbb{R}^{m \times n}$, $b \in \mathbb{R}^m$, $m \leq n$, $\text{rank} A = m$, and $x_0 \in \mathbb{R}^n$. Consider the problem
+    \[
+    \text{minimize } \|x - x_0\| \quad \text{subject to } Ax = b.
+    \]
+    Show that this problem has a unique solution given by
+    \[
+    x^* = A^\top \left( AA^\top \right)^{-1} b + \left( I_n - A^\top \left( AA^\top \right)^{-1} A \right) x_0.
+    \]
+\end{bb}
+\textbf{Solution:}\\
+To solve this, we will rewrite the problem as a system of linear equations minimize $||x||$ subject to $Ax=b$. We can then apply Theorem 12.2
+Let \[ y = x-x_0 \]
+\[Ax = A(y+x_0) = b \implies Ay = b + Ax_0\]
+Then the problem is now to find the unique vector $y^*$ that minimizes:  $||Ay = b - Ax_0||$
+\\By Theorem 12.1, the unique solution $x^*$ to $Ax = b$ that minimizes the norm $||x||$ is given by 
+$$x^*=A^T(AA^T)^{-1}b$$
+Applying this theorem to the system $Ay = b - Ax_0$, we find that
+\begin{align*}
+    y^* &= A^T(AA^T)^{-1}(b+Ax_0) \\
+    x^* &= y^* + x_0 =  A^T(AA^T)^{-1}(b+Ax_0) + x_0 \\
+    &= A^T(AA^T)^{-1}b + A^T(AA^T)^{-1}Ax_0 + x_0 \\
+    &= A^T(AA^T)^{-1}b + (I_n - A^T(AA^T)^{-1}A)x_0
+\end{align*}
+
+\bigbreak
+
+\begin{bb}
 \item Prove the following properties of generalized inverses:
 \begin{enumerate}
     \item[(a)] $(A^\top)^\dagger = (A^\dagger)^\top$.
     \item[(b)] $(A^\dagger)^\dagger = A$.
+\end{enumerate}    
+\end{bb}
+
+\textbf{Solution:}\\
+\begin{enumerate}
+    \item[(a)] 
+Recall that the pseudoinverse, $A^\dagger \in \mathbb{R}^{mxn}$ of $A$ can be defined as $$A^\dagger = (A^TA)^{-1}A^T = (AA^T)^{-1}A^T$$
+So, using this definition, we have:
+\begin{align*}
+    (A^T)^\dagger &= (AA^T)^{-1}A^T \\
+    (A^\dagger)^T &= (AA^T)^{-1}A^T \\ 
+    (A^T)^\dagger &=  (A^\dagger)^T
+\end{align*}    
+    \item[(b)] 
 \end{enumerate}
 
 \end{enumerate}
