@@ -1,0 +1,51 @@
+
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{fancyhdr}
+\usepackage[most]{tcolorbox} % Load the tcolorbox package with additional libraries
+
+\newtcolorbox{bb}[1][]{
+  colback=green!5!white,
+  colframe=teal!50!black,
+  title=#1,
+  boxrule=0.8mm,      
+  top=6mm,             
+  bottom=6mm,          
+  left=6mm,            
+  right=6mm,           
+  before=\vspace{5mm}, 
+  after=\vspace{5mm}   
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\chead{\textbf{Math 164 - Assignment \#6, Fall 2024}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{enumerate}
+    \begin{bb}
+      \item
+      Consider the following algorithm for minimizing a function $f$:
+      \[
+      x^{(k+1)} = x^{(k)} + \alpha_k d^{(k)},
+      \]
+      where 
+      \[
+      \alpha_k = \arg\min_\alpha f \big(x^{(k)} + \alpha d^{(k)}\big).
+      \]
+      Let $g^{(k)} = \nabla f \big(x^{(k)}\big)$ (as usual).
+      
+      Suppose that $f$ is quadratic with Hessian $Q$. We choose 
+      \[
+      d^{(k+1)} = \gamma_k g^{(k+1)} + d^{(k)},
+      \]
+      and we wish the directions $d^{(k)}$ and $d^{(k+1)}$ to be $Q$-conjugate. Find a formula for $\gamma_k$ in terms of $d^{(k)}$, $g^{(k+1)}$, and $Q$.
+      
+    \end{bb}
+\end{enumerate}
+
+\end{document}
