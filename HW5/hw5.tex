@@ -102,7 +102,7 @@ In order to have the directions  $d^{(k)}$ and $d^{(k+1)}$ $Q$-conjugate, we mus
    \beta_k &= \frac{g^{(k+1)})^T Q d^{(k)}}{(d^{(k)})^T Q d^{(k)}} \\
    d^{(k+1)} &= - g^{(k+1)} + \beta_k d^{(k)}
  \end{align*}
-In practice, we know we have found the minimizer if $g^{(k+1)} = 0$.
+The stopping condition of the conjugate gradient algorithm is $g^{(k+1)} = 0$. \\
 To complete this problem, simply run the above algorithm with $d^{(0)} = \nabla f(x^{(0)}) = [0, -1]^\top$ and $x^{(0)} = [0, 0]^\top$.
 \begin{align*}
   \alpha_0 &= -\frac{\begin{bmatrix}0 \\ -1\end{bmatrix}^T \begin{bmatrix}0 \\ -1\end{bmatrix}}{\begin{bmatrix}0 \\ -1\end{bmatrix}^T \begin{bmatrix}5 & -3 \\ -3 & 2\end{bmatrix}\begin{bmatrix}0 \\ -1\end{bmatrix}} = -\frac{1}{2}{} \\
@@ -122,7 +122,7 @@ To complete this problem, simply run the above algorithm with $d^{(0)} = \nabla 
   \end{bmatrix} \\
   \beta_0 &= -\frac{9}{4}
 \end{align*}
-
+Continue until $g^{(k+1)} = 0$ 
 \bigbreak
 \begin{bb}
 \item
@@ -177,6 +177,154 @@ where $g^{(k)} = \nabla f(x^{(k)})$ and $H_k$ is symmetric.
     \item[(b)] Which (if any) among the rank-one, DFP, and BFGS algorithms satisfy the three conditions in part (a) (whenever the algorithm is applied to a quadratic)? For those that do, specify the vectors $a^{(k)}$ and $b^{(k)}$.
 \end{enumerate}
 \end{bb}
+\begin{enumerate}
+  \item[(a)]
+  Quasi Newton algorithms have the form
+  \begin{align}
+    d^{(k+1)} &= -H_k g^{(k+1)} \\
+    \alpha_{k} &= argmin_{alpha\geq0}f(x^{k}+\alpha d^{k})\\
+    x^{(k+1)} &= x^{(k)} + \alpha_k d^{(k)}
+  \end{align}
+  In the quadratic case, the above matrices are required to satisfy \begin{align}
+    H_{k+1}\Delta g^{(i)}&=\Delta x^{(i)}, 1\leq i \leq k
+  \end{align}
+We want to show (4) holds \\
+Using the given equations, we have 
+\begin{align}
+  U_{k} &= H_{k+1} - H_{k}\\
+  U_{k}\Delta g^{(k)} &= (H_{k+1} - H_{k}) \Delta g^{(k)} = \Delta x^{(k)} - H_{k}\Delta g^{(k)} \\
+  H_{k+1}\Delta g^{(k)} &= \Delta x^{(k)} 
+\end{align}
+To show that this holds for all $1 \leq i \leq k$, we use induction:
+Assume that the above result holds for $k-1$, then
+\begin{align}
+H_{k+1}\Delta g^{(k-1)} &=  H_{k-1}\Delta g^{(k-1)}+ U_{k-1}\Delta g^{(k-1)} \\
+&= \Delta x^{(k-1)} + U_{k-1}\Delta g^{(k-1)} (IH)\\
+&= \Delta x^{(k-1)} + (a^{(k)} (\Delta x^{(k)})^\top + b^{(k)} (\Delta g^{(k)})^\top H_k) \Delta g^{(k-1)}  \\
+&=  \Delta x^{(k-1)} + a^{(k)} (\Delta x^{(k)})^\top\Delta g^{(k-1)}  + b^{(k)} (\Delta g^{(k)})^\top H_k \Delta g^{(k-1)}
+\end{align}
+Now we want to show that the right two terms of $(11)$ are equal to 0.\\
+To do this, we will use Theorem 11.1 which states (simplified) that for a quasi-Newton algorithm applied to a quadratic function, the directions $d^{(0)},..., d^{(k+1)}$ are Q-conjugate  
+Using this theorem, and condition (3), we can find that 
+\begin{align*}
+  a^{(k)} (\Delta x^{(k)})^\top\Delta g^{(k-1)} &= a^{(k)} (\alpha_k d^{(k)})^\top Q \Delta x^{(k-1)}\\
+  &= a^{(k)} \alpha_k (d^{(k)})^\top Q d^{(k-1)}\alpha_{k-1}\\
+  &= 0
+\end{align*}
+Repeat a similar simplification for the b term to find that it is equal to 0.\\
+Therefore, by induction, we can conclude that for all $1 \leq i \leq k$, $H_{k+1}\Delta g^{(i)} = \Delta x^{(i)}$, which completes the proof.
 
+\item[(b)]
+To show that the first two conditions hold, we want to show that 
+\[
+H_{k+1} \Delta g^{(i)} = \Delta x^{(i)}.
+\]
+\textbf{Rank-one Algorithm:} \\
+By Theorem 11.2, for the rank-one algorithm applied to the quadratic with Hessian $Q = Q^\top$, we have 
+\[
+H_{k+1} \Delta g^{(k)} = \Delta x^{(k)}, \quad 0 \leq k < l.
+\]
+Thus, the first two conditions are satisfied.
+
+For condition 3:
+\[
+U_k = H_{k+1} - H_k = 
+\frac{(\Delta x^{(k)} - H_k \Delta g^{(k)}) (\Delta x^{(k)} - H_k \Delta g^{(k)})^\top}{\Delta g^{(k)\top} (\Delta x^{(k)} - H_k \Delta g^{(k)})}.
+\]
+From this:
+\[
+a^{(k)} = \frac{\Delta x^{(k)} - H_k \Delta g^{(k)}}{\Delta g^{(k)\top} (\Delta x^{(k)} - H_k \Delta g^{(k)})}, \quad 
+b^{(k)} = -\frac{H_k \Delta g^{(k)}}{\Delta g^{(k)\top} (\Delta x^{(k)} - H_k \Delta g^{(k)})}.
+\]
+
+\textbf{DFP Algorithm:} \\
+By Theorem 11.3, in the DFP algorithm applied to the quadratic with Hessian $Q = Q^\top$, we have 
+\[
+H_{k+1} \Delta g^{(k)} = \Delta x^{(k)}, \quad 0 \leq k.
+\]
+Thus, conditions 1 and 2 are satisfied.
+
+For condition 3:
+\[
+U_k = H_{k+1} - H_k = 
+\frac{\Delta x^{(k)} (\Delta x^{(k)})^\top}{\Delta x^{(k)\top} \Delta g^{(k)}} - 
+\frac{H_k \Delta g^{(k)} [H_k \Delta g^{(k)}]^\top}{\Delta g^{(k)\top} H_k \Delta g^{(k)}}.
+\]
+From this:
+\[
+a^{(k)} = \frac{\Delta x^{(k)}}{\Delta x^{(k)\top} \Delta g^{(k)}}, \quad 
+b^{(k)} = -\frac{H_k \Delta g^{(k)}}{\Delta g^{(k)\top} H_k \Delta g^{(k)}}.
+\]
+
+\textbf{BFGS Algorithm:} \\
+Recall that the BFGS algorithm is a special case of the DFP algorithm, it's a mirror or dual.\\
+\begin{align*}
+  H_{k+1}^{\text{BFGS}} &= (B_{k+1})^{-1} \\
+  B_{k+1} &= \Delta g^{(i)} \Delta (x^{(i)})^{-1} \\
+  H_{k+1}^{\text{BFGS}} &= (B_{k+1})^{-1} = (\Delta g^{(i)} (\Delta x^{(i)})^{-1} )^{-1}\\
+  &= \Delta x^{i}(\Delta g^{(i)})^{-1}\\
+  H_{k+1}^{\text{BFGS}} \Delta g^{(i)} &= \Delta x^{(i)}\\
+\end{align*}
+So, conditions 1 and 2 are satisfied.\\
+The correction term update for the BFGS algorithm is given by
+\[
+H_{k+1}^{\text{BFGS}} = H_k + 
+\left( 1 + \frac{\Delta g^{(k)\top} H_k \Delta g^{(k)}}{\Delta g^{(k)\top} \Delta x^{(k)}} \right)
+\frac{\Delta x^{(k)} (\Delta x^{(k)})^\top}{\Delta x^{(k)\top} \Delta g^{(k)}} -
+\frac{H_k \Delta g^{(k)} (\Delta x^{(k)})^\top + (H_k \Delta g^{(k)} (\Delta x^{(k)})^\top)^\top}{\Delta g^{(k)\top} \Delta x^{(k)}}.
+\]
+
+From this, we can find that 
+\[
+a^{(k)} = \left( 
+  1 + \frac{\Delta g^{(k)\top} H_k \Delta g^{(k)}}{\Delta g^{(k)\top} \Delta x^{(k)}} 
+  \right)
+  \frac{\Delta x^{(k)}}{\Delta x^{(k)\top} \Delta g^{(k)}} 
+  - \frac{H_k \Delta g^{(k)}}{\Delta g^{(k)\top} \Delta x^{(k)}}
+, \quad 
+b^{(k)} = \frac{\Delta x^{(k)}}{\Delta g^{(k)\top} \Delta x^{(k)}}
+\]
+\end{enumerate}
+\begin{bb}
+\item 
+Given a function $f : \mathbb{R}^n \to \mathbb{R}$, consider an algorithm 
+\[
+x^{(k+1)} = x^{(k)} - \alpha_k H_k g^{(k)}
+\]
+for finding the minimizer of $f$, where $g^{(k)} = \nabla f(x^{(k)})$ and $H_k \in \mathbb{R}^{n \times n}$ is symmetric. Suppose that 
+\[
+H_k = \phi H_k^{\text{DFP}} + (1 - \phi) H_k^{\text{BFGS}},
+\]
+where $\phi \in \mathbb{R}$, and $H_k^{\text{DFP}}$ and $H_k^{\text{BFGS}}$ are matrices generated by the DFP and BFGS algorithms, respectively.
+
+\begin{enumerate}
+    \item[(a)] Show that the algorithm above is a quasi-Newton algorithm. Is the above algorithm a conjugate direction algorithm?
+    \item[(b)] Suppose that $0 \leq \phi \leq 1$. Show that if $H_0^{\text{DFP}} > 0$ and $H_0^{\text{BFGS}} > 0$, then $H_k > 0$ for all $k$. What can you conclude from this about whether or not the algorithm has the descent property?
+\end{enumerate}
+\end{bb}
+\begin{enumerate}
+  \item[(a)] 
+  To show the algorithm is a quasi-Newton algorithm, we will show
+  \[
+  H_{k}\Delta g^{(i)} = \Delta x^{(i)}  
+  \]
+  \begin{align*}
+    H_k\Delta g^{(i)} &= (\phi H_k^{\text{DFP}} + (1 - \phi) H_k^{\text{BFGS}}) \Delta g^{(i)}\\
+  \end{align*}
+  Since DFP and BFGS are quasi-Newton algorithms, we know that the above relation holds, so distributing $\Delta g^{(i)}$
+  \begin{align*}
+    H_{k}\Delta g^{(i)} &= \phi \Delta x^{(i)} + (1 - \phi) \Delta x^{(i)}\\
+    &= \Delta x^{(i)}
+  \end{align*}
+  Since the above algorithm is a quasi-Newton algorithm, the algorithm is a conjugate direction algorithm. (Theorem 11.1)
+
+  \item[(b)]
+  Observe that
+  \[(1-\phi) \geq 0 \]
+  Since $H_0^{\text{DFP}} > 0$ and $H_0^{\text{BFGS}} > 0$, it follows that $H_k > 0$ for all $k$.
+  $H_k$ is positive definite and symmetric. So, by Proposition 11.1, the algorithm has the descent property.
+\end{enumerate}
+
+% END QUESTIONS % 
 \end{enumerate}
 \end{document}
